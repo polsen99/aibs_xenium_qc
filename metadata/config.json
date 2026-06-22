@@ -1,6 +1,6 @@
 {
-    "xenium_output_dir": "/allen/programs/celltypes/workgroups/rnaseqanalysis/mFISH/xenium_qc/xenium_outputs/",
-    "qc_dir": "/allen/programs/celltypes/workgroups/rnaseqanalysis/mFISH/xenium_qc/",
+    "xenium_output_dir": "/allen/programs/celltypes/workgroups/rnaseqanalysis/mFISH/xenium_qc/xenium_output/",
+    "qc_dir": "/allen/programs/celltypes/workgroups/rnaseqanalysis/mFISH/xenium_qc/xenquaco_output/",
     "ilastik_program_path": "/allen/programs/celltypes/workgroups/rnaseqanalysis/mFISH/merfish_qc/tissue_mask/ilastik_program/ilastik-1.4.0-Linux/run_ilastik.sh",
     "ventricle_genes_list": ["Crb2", "Glis3", "Inhbb", "Naaa", "Cd24a", "Dsg2", "Hdc", "Shroom3", "Vit", "Rgs12", "Trp73"],
     "title_dict": {

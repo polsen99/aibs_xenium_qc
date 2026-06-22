@@ -77,7 +77,8 @@ def get_info_dict(paths_dict: dict,
     info_dict['experiment_id'] = experiment_id
     info_dict['species'] = species if species != "" else get_species(gene_panel)
     info_dict['gene_panel'] = gene_panel
-    info_dict['n_genes'] = get_n_genes(gene_panel)
+    # n_genes is computed from filtered transcripts by xenquaco (XeniumExperiment.n_genes)
+    # and copied onto the experiment in run_xenium_qc, so it is not set here.
     info_dict['xenium_instrument'] = get_xenium_instrument(paths_dict['experiment_path'])
     info_dict['imaging_date'] = None
 
@@ -100,15 +101,6 @@ def get_species(gene_panel: str = "", panel_mapping: dict = panel_mapping):
     if gene_panel != "" and gene_panel in panel_mapping:
         return panel_mapping[gene_panel].get('species', '')
     return ''
-
-
-def get_n_genes(gene_panel: str = "", panel_mapping: dict = panel_mapping):
-    """
-    Gets number of genes from panel_mapping using gene panel name
-    """
-    if gene_panel != "" and gene_panel in panel_mapping:
-        return panel_mapping[gene_panel].get('n_genes')
-    return None
 
 
 def get_xenium_instrument(experiment_path: Union[str, Path],
