@@ -1,0 +1,35 @@
+{
+    "xenium_output_dir": "/allen/programs/celltypes/workgroups/rnaseqanalysis/mFISH/xenium_qc/xenium_outputs/",
+    "qc_dir": "/allen/programs/celltypes/workgroups/rnaseqanalysis/mFISH/xenium_qc/",
+    "ilastik_program_path": "/allen/programs/celltypes/workgroups/rnaseqanalysis/mFISH/merfish_qc/tissue_mask/ilastik_program/ilastik-1.4.0-Linux/run_ilastik.sh",
+    "ventricle_genes_list": ["Crb2", "Glis3", "Inhbb", "Naaa", "Cd24a", "Dsg2", "Hdc", "Shroom3", "Vit", "Rgs12", "Trp73"],
+    "title_dict": {
+        "filtered_transcript_count": "Filtered Transcript Count",
+        "transcript_density_um2_per_gene": "Transcript Density (per $\\mu m^2$ per gene)",
+        "damage_percent": "Damage Percentage",
+        "detachment_percent": "Detachment Percentage"
+    },
+    "md_dict_keys": [
+        "barcode",
+        "experiment_id",
+        "species",
+        "xenium_instrument",
+        "gene_panel",
+        "n_genes",
+        "imaging_date",
+        "filtered_transcript_count",
+        "transcript_density_um2",
+        "transcript_density_um2_per_gene",
+        "on_tissue_transcript_count",
+        "damage_area",
+        "transcripts_area",
+        "detachment_area",
+        "ventricle_area",
+        "total_area",
+        "damage_percent",
+        "transcripts_percent",
+        "detachment_percent",
+        "ventricle_percent",
+        "xenquaco_version"
+    ]
+}
