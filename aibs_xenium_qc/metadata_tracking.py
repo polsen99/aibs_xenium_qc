@@ -33,8 +33,15 @@ def write_to_metadata_tracker(metadata_path: Union[str, Path], qc_dict: dict, me
     if metadata is None:
         try:
             metadata = read_metadata(metadata_path)
-        except FileNotFoundError:
-            metadata = pd.DataFrame(columns=list(qc_dict.keys()))
+        except FileNotFoundError as e:
+            # Never auto-create the tracker: a missing file almost always means a
+            # misconfigured path, and silently creating a new CSV would orphan the
+            # run instead of appending to the canonical tracker.
+            raise FileNotFoundError(
+                f"Metadata tracker not found at {metadata_path}. The tracker is not "
+                f"auto-created; verify config['qc_dir'] points to the existing tracker "
+                f"before running QC."
+            ) from e
 
     barcode = qc_dict['barcode']
     barcode_row = metadata[metadata['barcode'] == barcode]
