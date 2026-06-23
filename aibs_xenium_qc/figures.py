@@ -71,6 +71,7 @@ def plot_species_distribution(metadata_path: Union[str, Path], column: str,
     mouse_md = metadata_tracking.get_metadata(metadata_path, species='mouse')
     human_md = metadata_tracking.get_metadata(metadata_path, species='human')
     macaque_md = metadata_tracking.get_metadata(metadata_path, species='macaque')
+    marmoset_md = metadata_tracking.get_metadata(metadata_path, species='marmoset')
 
     if ax is None:
         fig, ax = plt.subplots(figsize=(8, 6))
@@ -81,6 +82,7 @@ def plot_species_distribution(metadata_path: Union[str, Path], column: str,
     mouse_label = "Mouse" if species_label_bool else ""
     human_label = "Human" if species_label_bool else ""
     macaque_label = "Macaque" if species_label_bool else ""
+    marmoset_label = "Marmoset" if species_label_bool else ""
 
     if species == "mouse":
         sns.kdeplot(data=mouse_md, x=column, fill=True, cut=0, label=mouse_label, alpha=0.1, ax=ax, warn_singular=False)
@@ -88,10 +90,13 @@ def plot_species_distribution(metadata_path: Union[str, Path], column: str,
         sns.kdeplot(data=human_md, x=column, fill=True, cut=0, label=human_label, alpha=0.1, ax=ax, warn_singular=False)
     elif species == "macaque":
         sns.kdeplot(data=macaque_md, x=column, fill=True, cut=0, label=macaque_label, alpha=0.1, ax=ax, warn_singular=False)
+    elif species == "marmoset":
+        sns.kdeplot(data=marmoset_md, x=column, fill=True, cut=0, label=marmoset_label, alpha=0.1, ax=ax, warn_singular=False)
     else:
         sns.kdeplot(data=mouse_md, x=column, fill=True, cut=0, label=mouse_label, alpha=0.1, ax=ax, warn_singular=False)
         sns.kdeplot(data=human_md, x=column, fill=True, cut=0, label=human_label, alpha=0.1, ax=ax, warn_singular=False)
         sns.kdeplot(data=macaque_md, x=column, fill=True, cut=0, label=macaque_label, alpha=0.1, ax=ax, warn_singular=False)
+        sns.kdeplot(data=marmoset_md, x=column, fill=True, cut=0, label=marmoset_label, alpha=0.1, ax=ax, warn_singular=False)
 
     if value is not None:
         if barcode != '':
