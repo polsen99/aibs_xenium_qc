@@ -1,6 +1,8 @@
 from pathlib import Path
 import json
 import os
+import re
+from datetime import datetime
 from typing import Union
 import xenquaco.data_processing as data_processing
 
@@ -80,7 +82,7 @@ def get_info_dict(paths_dict: dict,
     # n_genes is computed from filtered transcripts by xenquaco (XeniumExperiment.n_genes)
     # and copied onto the experiment in run_xenium_qc, so it is not set here.
     info_dict['xenium_instrument'] = get_xenium_instrument(paths_dict['experiment_path'])
-    info_dict['imaging_date'] = None
+    info_dict['imaging_date'] = get_imaging_date(paths_dict['experiment_path'])
 
     # Convert Path to str for JSON serialization
     for key, val in info_dict.items():
@@ -114,5 +116,35 @@ def get_xenium_instrument(experiment_path: Union[str, Path],
     for instrument_id, instrument_name in xenium_mapping.items():
         if instrument_id in experiment_path:
             return instrument_name
+
+    return None
+
+
+def get_imaging_date(experiment_path: Union[str, Path]):
+    """
+    Extracts imaging date (YYYY-MM-DD) from the Xenium output folder name.
+
+    Xenium output folders follow the convention
+    ``output-XETG#####__<slide>__<region>__<YYYYMMDD>__<HHMMSS>``,
+    so the date is the 8-digit token preceding the 6-digit time stamp.
+
+    Returns None if no valid date token is found.
+    """
+    folder = Path(experiment_path).name
+
+    match = re.search(r'__(\d{8})__(\d{6})(?:$|__)', folder)
+    if match is not None:
+        try:
+            return datetime.strptime(match.group(1), '%Y%m%d').strftime('%Y-%m-%d')
+        except ValueError:
+            pass
+
+    # Fallback: first 8-digit segment that parses as a valid date
+    for token in folder.split('__'):
+        if len(token) == 8 and token.isdigit():
+            try:
+                return datetime.strptime(token, '%Y%m%d').strftime('%Y-%m-%d')
+            except ValueError:
+                continue
 
     return None
