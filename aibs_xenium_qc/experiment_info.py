@@ -4,6 +4,7 @@ import os
 import re
 from datetime import datetime
 from typing import Union
+import pandas as pd
 import xenquaco.data_processing as data_processing
 
 
@@ -35,6 +36,7 @@ def get_paths_dict(experiment_id: Union[str, int],
     paths_dict['experiment_path'] = Path(experiment_path)
     paths_dict['transcripts_path'] = Path(experiment_path, 'transcripts.parquet')
     paths_dict['high_res_dapi_image_path'] = Path(experiment_path, 'morphology.ome.tif')
+    paths_dict['metrics_summary_path'] = Path(experiment_path, 'metrics_summary.csv')
 
     # QC output paths
     paths_dict['qc_metadata_tracker'] = Path(config['qc_dir'], 'qc_metadata_trackers',
@@ -77,8 +79,11 @@ def get_info_dict(paths_dict: dict,
 
     info_dict['barcode'] = barcode
     info_dict['experiment_id'] = experiment_id
-    info_dict['species'] = species if species != "" else get_species(gene_panel)
+    # gene_panel: use the provided value, else read panel_design from metrics_summary.csv
+    if gene_panel == "":
+        gene_panel = get_gene_panel(paths_dict['experiment_path'])
     info_dict['gene_panel'] = gene_panel
+    info_dict['species'] = species if species != "" else get_species(gene_panel)
     # n_genes is computed from filtered transcripts by xenquaco (XeniumExperiment.n_genes)
     # and copied onto the experiment in run_xenium_qc, so it is not set here.
     info_dict['xenium_instrument'] = get_xenium_instrument(paths_dict['experiment_path'])
@@ -94,6 +99,29 @@ def get_info_dict(paths_dict: dict,
         json.dump(info_dict, outfile, indent=4)
 
     return info_dict
+
+
+def get_gene_panel(experiment_path: Union[str, Path]):
+    """
+    Reads the panel design ID from the Xenium metrics_summary.csv in the
+    experiment output folder. Used as the gene_panel key into panel_mapping.json
+    so the panel can be detected automatically instead of passed in by hand.
+
+    Returns '' if metrics_summary.csv or the panel design column is not found.
+    """
+    metrics_path = Path(experiment_path, 'metrics_summary.csv')
+    if not os.path.exists(metrics_path):
+        print(f"metrics_summary.csv not found at {metrics_path}; gene_panel not auto-detected.")
+        return ''
+
+    metrics = pd.read_csv(metrics_path)
+    if len(metrics) > 0:
+        for col in ('panel_design', 'panel_design_id'):
+            if col in metrics.columns:
+                return str(metrics[col].iloc[0])
+
+    print(f"No panel design column in {metrics_path}; gene_panel not auto-detected.")
+    return ''
 
 
 def get_species(gene_panel: str = "", panel_mapping: dict = panel_mapping):

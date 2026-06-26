@@ -48,7 +48,8 @@ def main():
     parser.add_argument("--species", default="",
                         help="Override species; otherwise resolved from gene-panel via panel_mapping.json")
     parser.add_argument("--gene-panel", default="",
-                        help="Gene panel key (e.g. DQPQP4); used for species lookup")
+                        help="Gene panel key (e.g. DQPQP4). Leave unset to auto-detect "
+                             "from the bundle's metrics_summary.csv (panel_design)")
     parser.add_argument("--force-mask", action="store_true",
                         help="Force regeneration of ilastik masks")
     parser.add_argument("--no-pixel-classification", action="store_true",
