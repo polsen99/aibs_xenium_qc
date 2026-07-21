@@ -1,3 +1,4 @@
+import re
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 from matplotlib.axes import Axes
@@ -6,6 +7,19 @@ from pathlib import Path
 from typing import Union
 import aibs_xenium_qc.metadata_tracking as metadata_tracking
 from aibs_xenium_qc.experiment_info import config
+
+
+def short_barcode(barcode: str) -> str:
+    """
+    Trim a Xenium output folder name down to the portion before the timestamp,
+    for use as a concise legend label. e.g.
+    'output-XETG00044__0003191__Region_1__20230216__044341'
+    -> 'output-XETG00044__0003191__Region_1'. Returns the input unchanged if no
+    date segment is found.
+    """
+    barcode = str(barcode)
+    match = re.search(r'^(.*?)__\d{8}(?:__\d{6})?', barcode)
+    return match.group(1) if match else barcode
 
 
 def plot_qc_table(data, ax=None):
@@ -55,7 +69,7 @@ def plot_qc_table(data, ax=None):
 def plot_species_distribution(metadata_path: Union[str, Path], column: str,
                               species: str = None, value: float = None,
                               barcode: str = '', ax=None,
-                              species_label_bool=False,
+                              species_label_bool=False, fill: bool = True,
                               out_file: Union[str, Path] = None, dpi: int = 100):
     """
     KDE plot of a QC metric against distribution of previous experiments, split by species
@@ -85,22 +99,22 @@ def plot_species_distribution(metadata_path: Union[str, Path], column: str,
     marmoset_label = "Marmoset" if species_label_bool else ""
 
     if species == "mouse":
-        sns.kdeplot(data=mouse_md, x=column, fill=True, cut=0, label=mouse_label, alpha=0.1, ax=ax, warn_singular=False)
+        sns.kdeplot(data=mouse_md, x=column, fill=fill, cut=0, label=mouse_label, alpha=0.1, ax=ax, warn_singular=False)
     elif species == "human":
-        sns.kdeplot(data=human_md, x=column, fill=True, cut=0, label=human_label, alpha=0.1, ax=ax, warn_singular=False)
+        sns.kdeplot(data=human_md, x=column, fill=fill, cut=0, label=human_label, alpha=0.1, ax=ax, warn_singular=False)
     elif species == "macaque":
-        sns.kdeplot(data=macaque_md, x=column, fill=True, cut=0, label=macaque_label, alpha=0.1, ax=ax, warn_singular=False)
+        sns.kdeplot(data=macaque_md, x=column, fill=fill, cut=0, label=macaque_label, alpha=0.1, ax=ax, warn_singular=False)
     elif species == "marmoset":
-        sns.kdeplot(data=marmoset_md, x=column, fill=True, cut=0, label=marmoset_label, alpha=0.1, ax=ax, warn_singular=False)
+        sns.kdeplot(data=marmoset_md, x=column, fill=fill, cut=0, label=marmoset_label, alpha=0.1, ax=ax, warn_singular=False)
     else:
-        sns.kdeplot(data=mouse_md, x=column, fill=True, cut=0, label=mouse_label, alpha=0.1, ax=ax, warn_singular=False)
-        sns.kdeplot(data=human_md, x=column, fill=True, cut=0, label=human_label, alpha=0.1, ax=ax, warn_singular=False)
-        sns.kdeplot(data=macaque_md, x=column, fill=True, cut=0, label=macaque_label, alpha=0.1, ax=ax, warn_singular=False)
-        sns.kdeplot(data=marmoset_md, x=column, fill=True, cut=0, label=marmoset_label, alpha=0.1, ax=ax, warn_singular=False)
+        sns.kdeplot(data=mouse_md, x=column, fill=fill, cut=0, label=mouse_label, alpha=0.1, ax=ax, warn_singular=False)
+        sns.kdeplot(data=human_md, x=column, fill=fill, cut=0, label=human_label, alpha=0.1, ax=ax, warn_singular=False)
+        sns.kdeplot(data=macaque_md, x=column, fill=fill, cut=0, label=macaque_label, alpha=0.1, ax=ax, warn_singular=False)
+        sns.kdeplot(data=marmoset_md, x=column, fill=fill, cut=0, label=marmoset_label, alpha=0.1, ax=ax, warn_singular=False)
 
     if value is not None:
         if barcode != '':
-            ax.axvline(value, linestyle='dashed', color='k', label=barcode)
+            ax.axvline(value, linestyle='dashed', color='k', label=short_barcode(barcode))
         else:
             ax.axvline(value, linestyle='dashed', color='k')
 
@@ -130,9 +144,10 @@ def plot_qc_dists(metadata_path: Union[str, Path],
 
     col = 0
     ts_density_ax = plt.subplot(gs[col])
+    # Overlay every species as its own line curve on this single axes
     plot_species_distribution(metadata_path, 'transcript_density_um2_per_gene',
-                              species, ts_density, barcode,
-                              ax=ts_density_ax, species_label_bool=True)
+                              species=None, value=ts_density, barcode=barcode,
+                              ax=ts_density_ax, species_label_bool=True, fill=False)
     col += 1
 
     if damage_percent is not None:
