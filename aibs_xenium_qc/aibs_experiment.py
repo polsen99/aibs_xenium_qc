@@ -21,8 +21,8 @@ class AIBSXeniumExperiment():
         with AIBS-specific path resolution and metadata tracking
         """
         if barcode is None:
-            print(f"Barcode not provided. Defaulting to experiment_id: {experiment_id}")
-            barcode = experiment_id
+            barcode = experiment_info.get_barcode(experiment_id)
+            print(f"Barcode not provided. Calculated from experiment_id: {barcode}")
         barcode = str(barcode)
 
         # Get paths and info dicts

@@ -27,7 +27,7 @@ def get_paths_dict(experiment_id: Union[str, int],
     paths_dict = {}
 
     if barcode is None:
-        barcode = experiment_id
+        barcode = get_barcode(experiment_id)
     barcode = str(barcode)
 
     experiment_path = Path(config['xenium_output_dir'], experiment_id)
@@ -74,7 +74,7 @@ def get_info_dict(paths_dict: dict,
     info_dict = {}
 
     if barcode is None:
-        barcode = experiment_id
+        barcode = get_barcode(experiment_id)
     barcode = str(barcode)
 
     info_dict['barcode'] = barcode
@@ -99,6 +99,20 @@ def get_info_dict(paths_dict: dict,
         json.dump(info_dict, outfile, indent=4)
 
     return info_dict
+
+
+def get_barcode(experiment_id: Union[str, int]):
+    """
+    Extracts the barcode from a Xenium output folder name: the token immediately
+    preceding the __YYYYMMDD__HHMMSS timestamp. e.g.
+    'output-XETG00210__0072047__1449878532__20250717__201323' -> '1449878532'.
+    Falls back to the full experiment_id if the timestamp pattern is not found.
+    """
+    folder = Path(str(experiment_id)).name
+    match = re.search(r'__([^_]+(?:_[^_]+)*)__\d{8}__\d{6}(?:$|__)', folder)
+    if match:
+        return match.group(1)
+    return str(experiment_id)
 
 
 def get_gene_panel(experiment_path: Union[str, Path]):

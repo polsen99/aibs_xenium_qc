@@ -70,6 +70,7 @@ def plot_species_distribution(metadata_path: Union[str, Path], column: str,
                               species: str = None, value: float = None,
                               barcode: str = '', ax=None,
                               species_label_bool=False, fill: bool = True,
+                              alpha: float = 0.6,
                               out_file: Union[str, Path] = None, dpi: int = 100):
     """
     KDE plot of a QC metric against distribution of previous experiments, split by species
@@ -99,18 +100,18 @@ def plot_species_distribution(metadata_path: Union[str, Path], column: str,
     marmoset_label = "Marmoset" if species_label_bool else ""
 
     if species == "mouse":
-        sns.kdeplot(data=mouse_md, x=column, fill=fill, cut=0, label=mouse_label, alpha=0.1, ax=ax, warn_singular=False)
+        sns.kdeplot(data=mouse_md, x=column, fill=fill, cut=0, label=mouse_label, alpha=alpha, ax=ax, warn_singular=False)
     elif species == "human":
-        sns.kdeplot(data=human_md, x=column, fill=fill, cut=0, label=human_label, alpha=0.1, ax=ax, warn_singular=False)
+        sns.kdeplot(data=human_md, x=column, fill=fill, cut=0, label=human_label, alpha=alpha, ax=ax, warn_singular=False)
     elif species == "macaque":
-        sns.kdeplot(data=macaque_md, x=column, fill=fill, cut=0, label=macaque_label, alpha=0.1, ax=ax, warn_singular=False)
+        sns.kdeplot(data=macaque_md, x=column, fill=fill, cut=0, label=macaque_label, alpha=alpha, ax=ax, warn_singular=False)
     elif species == "marmoset":
-        sns.kdeplot(data=marmoset_md, x=column, fill=fill, cut=0, label=marmoset_label, alpha=0.1, ax=ax, warn_singular=False)
+        sns.kdeplot(data=marmoset_md, x=column, fill=fill, cut=0, label=marmoset_label, alpha=alpha, ax=ax, warn_singular=False)
     else:
-        sns.kdeplot(data=mouse_md, x=column, fill=fill, cut=0, label=mouse_label, alpha=0.1, ax=ax, warn_singular=False)
-        sns.kdeplot(data=human_md, x=column, fill=fill, cut=0, label=human_label, alpha=0.1, ax=ax, warn_singular=False)
-        sns.kdeplot(data=macaque_md, x=column, fill=fill, cut=0, label=macaque_label, alpha=0.1, ax=ax, warn_singular=False)
-        sns.kdeplot(data=marmoset_md, x=column, fill=fill, cut=0, label=marmoset_label, alpha=0.1, ax=ax, warn_singular=False)
+        sns.kdeplot(data=mouse_md, x=column, fill=fill, cut=0, label=mouse_label, alpha=alpha, ax=ax, warn_singular=False)
+        sns.kdeplot(data=human_md, x=column, fill=fill, cut=0, label=human_label, alpha=alpha, ax=ax, warn_singular=False)
+        sns.kdeplot(data=macaque_md, x=column, fill=fill, cut=0, label=macaque_label, alpha=alpha, ax=ax, warn_singular=False)
+        sns.kdeplot(data=marmoset_md, x=column, fill=fill, cut=0, label=marmoset_label, alpha=alpha, ax=ax, warn_singular=False)
 
     if value is not None:
         if barcode != '':
