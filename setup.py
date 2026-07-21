@@ -18,5 +18,5 @@ setup(
     package_data={
         'aibs_xenium_qc': ['metadata/*'],
     },
-    install_requires=requirements + ['xenquaco @ git+https://github.com/polsen99/xenquaco.git#egg=xenquaco'],
+    install_requires=requirements + ['xenquaco @ git+https://github.com/AllenInstitute/xenquaco.git#egg=xenquaco'],
 )
