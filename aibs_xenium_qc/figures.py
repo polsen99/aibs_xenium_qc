@@ -1,6 +1,5 @@
 import re
 import matplotlib.pyplot as plt
-import matplotlib.gridspec as gridspec
 from matplotlib.axes import Axes
 import seaborn as sns
 from pathlib import Path
@@ -127,48 +126,25 @@ def plot_species_distribution(metadata_path: Union[str, Path], column: str,
 
 
 def plot_qc_dists(metadata_path: Union[str, Path],
-                  ts_density: float, barcode: str, data: list,
+                  ts_density: float, barcode: str, data: list = None,
                   damage_percent: float = None, detachment_percent: float = None,
                   species: str = None,
                   out_file: Union[str, Path] = None, dpi: int = 100):
     """
-    Combined QC distribution figure: transcript density, damage, detachment + metrics table
+    Transcript-density distribution figure: every species is drawn as its own
+    line curve on a single axes, with this experiment's value marked by a
+    dashed line labeled with its barcode.
+
+    ``data``, ``damage_percent`` and ``detachment_percent`` are accepted for
+    backward compatibility but are no longer plotted here.
     """
-    n_plots = 1
-    if damage_percent is not None:
-        n_plots += 1
-    if detachment_percent is not None:
-        n_plots += 1
+    fig, ts_density_ax = plt.subplots(figsize=(8, 6))
 
-    _ = plt.figure(figsize=(6 * n_plots, 8))
-    gs = gridspec.GridSpec(2, n_plots, height_ratios=[1, 0.4])
-
-    col = 0
-    ts_density_ax = plt.subplot(gs[col])
     # Overlay every species as its own line curve on this single axes
     plot_species_distribution(metadata_path, 'transcript_density_um2_per_gene',
                               species=None, value=ts_density, barcode=barcode,
                               ax=ts_density_ax, species_label_bool=True, fill=False)
-    col += 1
 
-    if damage_percent is not None:
-        damage_ax = plt.subplot(gs[col])
-        plot_species_distribution(metadata_path, 'damage_percent',
-                                  species, damage_percent, barcode,
-                                  ax=damage_ax, species_label_bool=True)
-        col += 1
-
-    if detachment_percent is not None:
-        detachment_ax = plt.subplot(gs[col])
-        plot_species_distribution(metadata_path, 'detachment_percent',
-                                  species, detachment_percent, barcode,
-                                  ax=detachment_ax, species_label_bool=True)
-
-    table_ax = plt.subplot(gs[n_plots:])
-    plot_qc_table(data, ax=table_ax)
-
-    plt.suptitle(barcode, fontsize=18)
-    fig = plt.gcf()
     fig.patch.set_alpha(0)
     plt.tight_layout()
 
