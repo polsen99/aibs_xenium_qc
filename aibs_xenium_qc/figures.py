@@ -1,24 +1,10 @@
-import re
 import matplotlib.pyplot as plt
 from matplotlib.axes import Axes
 import seaborn as sns
 from pathlib import Path
 from typing import Union
 import aibs_xenium_qc.metadata_tracking as metadata_tracking
-from aibs_xenium_qc.experiment_info import config
-
-
-def short_barcode(barcode: str) -> str:
-    """
-    Trim a Xenium output folder name down to the portion before the timestamp,
-    for use as a concise legend label. e.g.
-    'output-XETG00044__0003191__Region_1__20230216__044341'
-    -> 'output-XETG00044__0003191__Region_1'. Returns the input unchanged if no
-    date segment is found.
-    """
-    barcode = str(barcode)
-    match = re.search(r'^(.*?)__\d{8}(?:__\d{6})?', barcode)
-    return match.group(1) if match else barcode
+from aibs_xenium_qc.experiment_info import config, get_barcode
 
 
 def plot_qc_table(data, ax=None):
@@ -114,7 +100,7 @@ def plot_species_distribution(metadata_path: Union[str, Path], column: str,
 
     if value is not None:
         if barcode != '':
-            ax.axvline(value, linestyle='dashed', color='k', label=short_barcode(barcode))
+            ax.axvline(value, linestyle='dashed', color='k', label=get_barcode(barcode))
         else:
             ax.axvline(value, linestyle='dashed', color='k')
 
