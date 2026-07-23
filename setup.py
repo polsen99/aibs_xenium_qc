@@ -11,12 +11,12 @@ setup(
     description="Tools for QC on Xenium datasets using AIBS file storage structures",
     author="Paul Olsen",
     author_email="paul.olsen@alleninstitute.org",
-    url="https://github.com/AllenInstitute/aibs_xenium_qc",
+    url="https://github.com/polsen99/aibs_xenium_qc",
     license="LICENSE",
     packages=find_packages(where="."),
     include_package_data=True,
     package_data={
         'aibs_xenium_qc': ['metadata/*'],
     },
-    install_requires=requirements + ['xenquaco @ git+https://github.com/AllenInstitute/xenquaco.git#egg=xenquaco'],
+    install_requires=requirements + ['xenquaco @ git+https://github.com/polsen99/xenquaco.git#egg=xenquaco'],
 )
