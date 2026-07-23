@@ -1,0 +1,13 @@
+name: xenquaco
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pip
+  - jupyterlab
+  - pip:
+      # Installs the xenquaco library and all of its scientific dependencies
+      # (numpy, pandas, tifffile, matplotlib, scikit-image, opencv-python,
+      # imagecodecs, pyarrow). aibs_xenium_qc itself is installed separately
+      # with `pip install -e .` from the repo root (see README).
+      - git+https://github.com/polsen99/xenquaco.git
