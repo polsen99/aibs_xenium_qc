@@ -55,7 +55,7 @@ def plot_species_distribution(metadata_path: Union[str, Path], column: str,
                               species: str = None, value: float = None,
                               barcode: str = '', ax=None,
                               species_label_bool=False, fill: bool = True,
-                              alpha: float = 0.6,
+                              alpha: float = 0.1,
                               out_file: Union[str, Path] = None, dpi: int = 100):
     """
     KDE plot of a QC metric against distribution of previous experiments, split by species
@@ -118,18 +118,19 @@ def plot_qc_dists(metadata_path: Union[str, Path],
                   out_file: Union[str, Path] = None, dpi: int = 100):
     """
     Transcript-density distribution figure: every species is drawn as its own
-    line curve on a single axes, with this experiment's value marked by a
-    dashed line labeled with its barcode.
+    translucent filled KDE on a single axes, with this experiment's value marked
+    by a dashed line labeled with its barcode.
 
     ``data``, ``damage_percent`` and ``detachment_percent`` are accepted for
     backward compatibility but are no longer plotted here.
     """
     fig, ts_density_ax = plt.subplots(figsize=(8, 6))
 
-    # Overlay every species as its own line curve on this single axes
+    # Overlay every species as its own translucent filled KDE on this single axes
     plot_species_distribution(metadata_path, 'transcript_density_um2_per_gene',
                               species=None, value=ts_density, barcode=barcode,
-                              ax=ts_density_ax, species_label_bool=True, fill=False)
+                              ax=ts_density_ax, species_label_bool=True,
+                              fill=True, alpha=0.1)
 
     fig.patch.set_alpha(0)
     plt.tight_layout()
